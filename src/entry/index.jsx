@@ -13,14 +13,14 @@ import {
 }
 from "antd";
 
-const url = "http://127.0.0.1:8360";
+const url = "http://0.0.0.0:8360";
 
 class App extends React.Component {
 	render() {
 		return (
-			<div style={{display:"flex",flex:4}}> 
+			<div style={{display:"flex",flex:4}}>
 				<div style ={{flex:1,background:"#FFFFFF"}}>
-					<Categories url={url}/> 
+					<Categories url={url}/>
 				</div>
 				<div style ={{flex:3,paddingLeft:5,paddingRight:5,paddingTop:5,paddingBottom:5,}}>
 					<Texts url={url} />
