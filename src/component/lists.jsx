@@ -16,7 +16,6 @@ export default class lists extends React.Component {
 
 	constructor(props) {
 		super(props);
-		// console.log(this.props);
 		this.state = {
 			data: this.props.data,
 			url: this.props.url,
@@ -138,7 +137,7 @@ export default class lists extends React.Component {
 				<div>
 			        <Modal title={this.state.modalTitle} visible={this.state.visible}
 			          onOk={this.handleOk.bind(this)} onCancel={this.handleCancel.bind(this)}>
-						<p>{this.state.modalContent}</p>
+								<p>{this.state.modalContent}</p>
 			        </Modal>
 		      	</div>
 	      	</div>

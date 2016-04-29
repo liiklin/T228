@@ -1,12 +1,12 @@
 import { combineReducers } from 'redux'
 import {
-  SELECT_REDDIT, INVALIDATE_REDDIT,
-  REQUEST_POSTS, RECEIVE_POSTS
-} from '../actions/getTextsByCategry'
+  REQUEST_TEXTS, RECEIVE_TEXTS,
+  SELECT_CATEGRY, INVALIDATE_TEXTS
+} from '../actions/getTextsByCategry';
 
-function selectedReddit(state = 'reactjs', action) {
+function selectedCategry(state = '1', action) {
   switch (action.type) {
-    case SELECT_REDDIT:
+    case SELECT_CATEGRY:
       return action.reddit
     default:
       return state
@@ -19,16 +19,16 @@ function posts(state = {
   items: []
 }, action) {
   switch (action.type) {
-    case INVALIDATE_REDDIT:
+    case INVALIDATE_TEXTS:
       return Object.assign({}, state, {
         didInvalidate: true
       })
-    case REQUEST_POSTS:
+    case REQUEST_TEXTS:
       return Object.assign({}, state, {
         isFetching: true,
         didInvalidate: false
       })
-    case RECEIVE_POSTS:
+    case RECEIVE_TEXTS:
       return Object.assign({}, state, {
         isFetching: false,
         didInvalidate: false,
@@ -40,11 +40,11 @@ function posts(state = {
   }
 }
 
-function postsByReddit(state = { }, action) {
+function textsByCategry(state = { }, action) {
   switch (action.type) {
-    case INVALIDATE_REDDIT:
-    case RECEIVE_POSTS:
-    case REQUEST_POSTS:
+    case INVALIDATE_TEXTS:
+    case RECEIVE_TEXTS:
+    case REQUEST_TEXTS:
       return Object.assign({}, state, {
         [action.reddit]: posts(state[action.reddit], action)
       })
@@ -54,8 +54,8 @@ function postsByReddit(state = { }, action) {
 }
 
 const rootReducer = combineReducers({
-  postsByReddit,
-  selectedReddit
+  textsByCategry,
+  selectedCategry
 })
 
 export default rootReducer

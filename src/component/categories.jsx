@@ -5,7 +5,6 @@ import {
 from 'antd';
 import './categories.less';
 import _ from "underscore";
-import PubSub from "pubsub-js";
 import fetch from 'isomorphic-fetch'
 
 const TreeNode = Tree.TreeNode;
@@ -81,13 +80,12 @@ export default class categories extends React.Component {
 			});
 	}
 	onSelect(info) {
-		// console.log(info)
 		if (info.length) {
 			console.log(`${this.state.url}/categories/${info[0]}/texts`)
 			fetch(`${this.state.url}/categories/${info[0]}/texts`)
 				.then(res => res.json())
 				.then(res => {
-					PubSub.publish('products', res);
+					// PubSub.publish('products', res);
 					// console.log(JSON.stringify(res))
 				}).catch((error) => {
 					console.error(error);

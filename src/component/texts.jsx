@@ -8,13 +8,13 @@ import _ from "underscore";
 import classNames from 'classnames';
 import Lists from "./lists";
 import './texts.less';
-import PubSub from "pubsub-js";
 
 const InputGroup = Input.Group;
 
 export default class texts extends React.Component {
 	static propTypes = {
 		name: React.PropTypes.string,
+		textLists: React.PropTypes.array.isRequired
 	};
 	constructor(props) {
 		super(props);
@@ -28,23 +28,8 @@ export default class texts extends React.Component {
 		};
 	}
 	componentDidMount() {
-		this.pubsub_token = PubSub.subscribe('products', function(topic, product) {
-			this.setState({
-				datas: new Array()
-			});
-			let datas = new Array();
-			product.map((val, index) => {
-				datas.push(
-					<Lists key={index} url={this.state.url} data={val}/>
-				);
-			});
-			this.setState({
-				datas: datas
-			});
-		}.bind(this));
 	}
 	componentWillUnmount() {
-		PubSub.unsubscribe(this.pubsub_token);
 	}
 	handleInputChange(e) {
 		this.setState({
