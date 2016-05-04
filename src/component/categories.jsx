@@ -5,7 +5,9 @@ import {
 from 'antd';
 import './categories.less';
 import _ from "underscore";
-import fetch from 'isomorphic-fetch'
+import fetch from 'isomorphic-fetch';
+import { connect } from 'react-redux';
+import { selectCategry, fetchTextsIfNeeded, invalidateTexts } from '../actions/getTextsByCategry';
 
 const TreeNode = Tree.TreeNode;
 
@@ -45,6 +47,10 @@ function getNewTreeData(treeData, curKey, child, level) {
 }
 
 export default class categories extends React.Component {
+	static propTypes = {
+		dispatch: React.PropTypes.func.isRequired,
+		selectedCategry: React.PropTypes.string.isRequired,
+	};
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -59,7 +65,6 @@ export default class categories extends React.Component {
 		};
 	}
 	componentDidMount() {
-		console.log(`${this.state.url}/categories`);
 		fetch(`${this.state.url}/categories`)
 			.then(res => res.json())
 			.then(res => {
@@ -79,18 +84,10 @@ export default class categories extends React.Component {
 				console.error(error);
 			});
 	}
+
 	onSelect(info) {
 		if (info.length) {
-			console.log(`${this.state.url}/categories/${info[0]}/texts`)
-			fetch(`${this.state.url}/categories/${info[0]}/texts`)
-				.then(res => res.json())
-				.then(res => {
-					// PubSub.publish('products', res);
-					// console.log(JSON.stringify(res))
-				}).catch((error) => {
-					console.error(error);
-				});
-			let expand = (info == this.state.expanded) ? [] : info
+			this.props.dispatch(selectCategry(info[0]));
 			this.setState({
 				selected: info,
 				expanded: info
@@ -112,3 +109,13 @@ export default class categories extends React.Component {
 		);
 	}
 }
+
+function mapStateToProps(state) {
+  const { selectedCategry,  } = state;
+
+  return {
+    selectedCategry,
+  }
+}
+
+export default connect(mapStateToProps)(categories);

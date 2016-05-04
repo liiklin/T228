@@ -5,31 +5,41 @@ import {
 from 'antd';
 
 import _ from "underscore";
+import fetch from 'isomorphic-fetch';
 import classNames from 'classnames';
 import Lists from "./lists";
+import ShowTexts from "./showTexts";
 import './texts.less';
+import { connect } from 'react-redux';
+import { selectCategry, fetchTextsIfNeeded, invalidateTexts } from '../actions/getTextsByCategry';
 
 const InputGroup = Input.Group;
 
-export default class texts extends React.Component {
+class texts extends React.Component {
 	static propTypes = {
-		name: React.PropTypes.string,
-		textLists: React.PropTypes.array.isRequired
+		posts: React.PropTypes.array.isRequired,
+		isFetching: React.PropTypes.bool.isRequired,
+		lastUpdated: React.PropTypes.number,
+		dispatch: React.PropTypes.func.isRequired,
+		selectedCategry: React.PropTypes.string.isRequired,
 	};
 	constructor(props) {
 		super(props);
+		console.log(props);
 		this.state = {
 			loading: false,
 			iconLoading: false,
 			value: '交通安全',
 			focus: false,
 			url: this.props.url,
-			datas: new Array(),
+			datas: this.props.posts,
 		};
 	}
-	componentDidMount() {
-	}
-	componentWillUnmount() {
+	componentWillReceiveProps(nextProps) {
+		if (nextProps.selectedCategry !== this.props.selectedCategry) {
+			const { dispatch, selectedCategry } = nextProps;
+			dispatch(fetchTextsIfNeeded(selectedCategry));
+		}
 	}
 	handleInputChange(e) {
 		this.setState({
@@ -44,20 +54,15 @@ export default class texts extends React.Component {
 	handleSearch() {
 		let words = this.state.value;
 		if (words) {
+			this.props.dispatch(selectCategry('-1'));
 			fetch(`${this.state.url}/texts?word=${words}`)
 				.then(res => res.json())
 				.then(res => {
 					this.setState({
 						datas: new Array()
 					});
-					let datas = new Array();
-					res.map((val, index) => {
-						datas.push(
-							<Lists key={index} url={this.state.url} data={val}/>
-						);
-					});
 					this.setState({
-						datas: datas
+						datas: res
 					});
 				}).catch((error) => {
 					console.error(error);
@@ -73,6 +78,8 @@ export default class texts extends React.Component {
 			'ant-search-input': true,
 			'ant-search-input-focus': this.state.focus,
 		});
+		const { selectedCategry, posts, isFetching, lastUpdated } = this.props;
+		const isEmpty = posts.length === 0;
 		return (
 			<div>
 				<Row>
@@ -90,14 +97,46 @@ export default class texts extends React.Component {
 					</Col>
 				</Row>
 				<Row>
-					<Col span="1"></Col>
-					<Col span="22">
-						<Row>
-							{this.state.datas}
-						</Row>
-					</Col>
+				<Col span="1"></Col>
+				<Col span="22">
+					<Row>
+				{
+					isEmpty
+					?
+					<div>
+						<ShowTexts url={this.state.url} posts={this.state.datas}/>
+					</div>
+
+					:
+					<div>
+						<ShowTexts url={this.state.url} posts={posts}/>
+					</div>
+				}
+				</Row>
+				</Col>
 				</Row>
 			</div>
 		);
 	}
 }
+
+function mapStateToProps(state) {
+  const { selectedCategry, textsByCategry } = state
+  const {
+    isFetching,
+    lastUpdated,
+    items: posts
+  } = textsByCategry[selectedCategry] || {
+    isFetching: true,
+    items: []
+  }
+
+  return {
+    selectedCategry,
+    posts,
+    isFetching,
+    lastUpdated
+  }
+}
+
+export default connect(mapStateToProps)(texts);

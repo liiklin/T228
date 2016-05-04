@@ -1,40 +1,36 @@
 import fetch from 'isomorphic-fetch';
 
-const baseUrl = 'http://0.0.0.0:8360';
+const baseUrl = 'http://127.0.0.1:8360';
 
-export const REQUEST_TEXTS = 'REQUEST_TEXTS';
-export const RECEIVE_TEXTS = 'RECEIVE_TEXTS';
-export const SELECT_CATEGRY = 'SELECT_CATEGRY';
-export const INVALIDATE_TEXTS = 'INVALIDATE_TEXTS';
+export const REQUEST_TEXTS_BYCATEGORY = 'REQUEST_TEXTS_BYCATEGORY';
+export const RECEIVE_TEXTS_BYCATEGORY = 'RECEIVE_TEXTS_BYCATEGORY';
+export const SELECT_CATEGORY = 'SELECT_CATEGORY';
+export const INVALIDATE_TEXTS_BYCATEGORY = 'INVALIDATE_TEXTS_BYCATEGORY';
 
 export function selectCategry(categoryId) {
-  console.log(categoryId);
   return {
-    type: SELECT_CATEGRY,
+    type: SELECT_CATEGORY,
     categoryId
   }
 }
 
 export function invalidateTexts(categoryId) {
-  console.log(categoryId);
   return {
-    type: INVALIDATE_TEXTS,
+    type: INVALIDATE_TEXTS_BYCATEGORY,
     categoryId
   }
 }
 
 function requestTexts(categoryId) {
-  console.log(categoryId);
   return {
-    type: REQUEST_TEXTS,
+    type: REQUEST_TEXTS_BYCATEGORY,
     categoryId
   }
 }
 
 function receiveTexts(categoryId, json) {
-  console.log(json);
   return {
-    type: RECEIVE_TEXTS,
+    type: RECEIVE_TEXTS_BYCATEGORY,
     categoryId,
     posts: json.length?json:new Array(),
     receivedAt: Date.now()
@@ -43,16 +39,17 @@ function receiveTexts(categoryId, json) {
 
 function fetchTexts(categoryId) {
   return dispatch => {
-    dispatch(requestTexts(categoryId))
+    dispatch(requestTexts(categoryId));
     return fetch(`${baseUrl}/categories/${categoryId}`)
       .then(response => response.json())
       .then(json => dispatch(receiveTexts(categoryId, json)))
   }
 }
 
-export function fetchPostsIfNeeded(categoryId) {
-  console.log(categoryId);
+export function fetchTextsIfNeeded(categoryId) {
   return (dispatch, getState) => {
-      return dispatch(fetchTexts(categoryId))
+    if (typeof categoryId !== 'undefined') {
+      return dispatch(fetchTexts(categoryId));
+    }
   }
 }

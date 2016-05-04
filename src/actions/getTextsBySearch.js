@@ -1,6 +1,6 @@
 import fetch from 'isomorphic-fetch';
 
-const baseUrl = '127.0.0.1:8360';
+const baseUrl = 'http://127.0.0.1:8360';
 
 export const REQUEST_TEXTS = 'REQUEST_TEXTS';
 export const RECEIVE_POSTS = 'RECEIVE_POSTS';

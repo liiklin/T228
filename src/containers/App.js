@@ -1,5 +1,4 @@
 import React, { Component, PropTypes } from 'react';
-import { connect } from 'react-redux';
 import '../common/lib';
 import Categories from '../component/categories';
 import Texts from '../component/texts';
@@ -8,7 +7,7 @@ const url = "http://0.0.0.0:8360";
 
 export default class App extends Component {
   constructor(props) {
-    super(props)
+    super(props);
   }
   render() {
 		return (

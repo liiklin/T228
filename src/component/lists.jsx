@@ -16,6 +16,7 @@ export default class lists extends React.Component {
 
 	constructor(props) {
 		super(props);
+		console.log(props);
 		this.state = {
 			data: this.props.data,
 			url: this.props.url,
@@ -86,7 +87,6 @@ export default class lists extends React.Component {
 		});
 	}
 	onChange(page) {
-		console.log(page);
 		let texts = _.map(this.state.data.texts.slice((page - 1) * this.state.pageSize, page * this.state.pageSize), (text, index) => {
 			return (
 				<Row className="text" key={text.id}>
